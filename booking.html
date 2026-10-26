@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h2>Grand Hotel</h2>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="rooms.html">Rooms</a>
+            <a href="booking.html">Booking</a>
+        </nav>
+    </header>
+
+    <section class="content">
+        <h1>Book Your Room</h1>
+
+        <form id="bookingForm">
+            <label for="name">Full Name</label>
+            <input type="text" id="name"
+                   placeholder="Enter your name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email"
+                   placeholder="Enter your email" required>
+
+            <label for="room">Select Room</label>
+            <select id="room" required>
+                <option value="">Choose a room</option>
+                <option value="Standard">Standard - ₹1500/night</option>
+                <option value="Deluxe">Deluxe - ₹2500/night</option>
+                <option value="Luxury">Luxury - ₹4000/night</option>
+            </select>
+
+            <label for="checkin">Check-in Date</label>
+            <input type="date" id="checkin" required>
+
+            <label for="checkout">Check-out Date</label>
+            <input type="date" id="checkout" required>
+
+            <button class="btn" type="submit">Confirm Booking</button>
+        </form>
+
+        <div id="result"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Grand Hotel</p>
+    </footer>
+
+    <script>
+        const form = document.getElementById("bookingForm");
+        const checkin = document.getElementById("checkin");
+        const checkout = document.getElementById("checkout");
+        const result = document.getElementById("result");
+
+        const today = new Date();
+        const minDate =
+            today.getFullYear() + "-" +
+            String(today.getMonth() + 1).padStart(2, "0") + "-" +
+            String(today.getDate()).padStart(2, "0");
+
+        checkin.min = minDate;
+        checkout.min = minDate;
+
+        checkin.addEventListener("change", function () {
+            checkout.min = checkin.value || minDate;
+
+            if (checkout.value && checkout.value <= checkin.value) {
+                checkout.value = "";
+            }
+        });
+
+        const params = new URLSearchParams(window.location.search);
+        const roomParam = params.get("room");
+
+        if (["Standard", "Deluxe", "Luxury"].includes(roomParam)) {
+            document.getElementById("room").value = roomParam;
+        }
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            if (checkout.value <= checkin.value) {
+                result.textContent =
+                    "Check-out date must be after check-in date.";
+                return;
+            }
+
+            const name = document.getElementById("name").value.trim();
+            const room = document.getElementById("room").value;
+
+            result.textContent =
+                "Thank you, " + name +
+                "! Your " + room +
+                " room booking request has been submitted successfully. " +
+                "(Demo only: no reservation has been saved.)";
+
+            form.reset();
+            checkout.min = minDate;
+        });
+    </script>
+</body>
+</html>
+                              
